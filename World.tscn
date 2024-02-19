@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=3 uid="uid://cq50fweidkb1r"]
+
+[ext_resource type="Script" path="res://World.gd" id="1_2i1rb"]
+[ext_resource type="Texture2D" uid="uid://o4i4gjef25af" path="res://icon.svg" id="2_7882p"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d2h8i"]
+albedo_texture = ExtResource("2_7882p")
+uv1_scale = Vector3(100, 100, 100)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_l68md"]
+lightmap_size_hint = Vector2i(5002, 5002)
+size = Vector2(1000, 1000)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_p8lyv"]
+size = Vector3(1000, 0, 1000)
+
+[node name="World" type="Node3D"]
+script = ExtResource("1_2i1rb")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://Player.tscn")
+spawn_path = NodePath("../Players")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+material_override = SubResource("StandardMaterial3D_d2h8i")
+mesh = SubResource("PlaneMesh_l68md")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_p8lyv")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.604599, -0.258602, 0.753382, 0, 0.945831, 0.32466, -0.79653, -0.196289, 0.571848, 5.47338, 3.60155, -2.02681)
+
+[node name="Players" type="Node3D" parent="."]
+
+[node name="Spawn1" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 0)
+
+[node name="Spawn2" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0)

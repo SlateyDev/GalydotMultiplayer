@@ -1,0 +1,56 @@
+[gd_scene load_steps=9 format=3 uid="uid://dtg80jmbxuo7b"]
+
+[ext_resource type="Script" path="res://Player.gd" id="1_r0f3e"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_cnb27"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 0
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 0
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_uw5pk"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = false
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = false
+properties/1/replication_mode = 2
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_c1qcb"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ejxb1"]
+albedo_color = Color(1, 1, 0.145098, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_m0cr7"]
+material = SubResource("StandardMaterial3D_ejxb1")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d3bmb"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_5g715"]
+material = SubResource("StandardMaterial3D_d3bmb")
+size = Vector3(0.885, 0.35, 0.28)
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_r0f3e")
+
+[node name="SpawnSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_cnb27")
+
+[node name="ReplicationSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_uw5pk")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_c1qcb")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_m0cr7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58787, 0.337705)
+mesh = SubResource("BoxMesh_5g715")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.786773, -0.350665, 0.507958, 0, 0.822948, 0.568117, -0.617242, -0.446979, 0.647474, 2.34666, 2.90852, 2.66587)
