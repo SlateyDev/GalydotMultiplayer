@@ -15,7 +15,12 @@ var players_loaded = 0
 @onready var role = "Unknown"
 
 func mp_print(_value):
-	print(role, "(for: ", multiplayer.get_unique_id(), ", from:", multiplayer.get_remote_sender_id(), ") - ", _value)
+	var unique_id = "N/A"
+	var sender_id = "N/A"
+	if multiplayer:
+		unique_id = str(multiplayer.get_unique_id())
+		sender_id = str(multiplayer.get_remote_sender_id())
+	print(role, "(for: ", unique_id, ", from:", sender_id, ") - ", _value)
 
 func _ready():
 	multiplayer.peer_connected.connect(_on_player_connected)

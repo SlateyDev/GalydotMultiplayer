@@ -11,6 +11,8 @@ func _ready():
 	
 	if name.to_int() == multiplayer.get_unique_id():
 		$Camera3D.current = true
+		$MeIndicator.visible = true
+		$AnimationPlayer.play("IndicatorBob")
 
 func _enter_tree():
 	Lobby.mp_print("_enter_tree() for %d" % [name.to_int()])
