@@ -3,6 +3,7 @@ extends Node3D
 @onready var player_prefab = preload("res://Player.tscn")
 
 func _ready():
+	Lobby.player_disconnected.connect(on_player_disconnected)
 	Lobby.player_loaded.rpc_id(1)
 
 # Called only on the server.
@@ -15,3 +16,9 @@ func start_game():
 		new_player.name = str(player)
 		new_player.position = get_node("Spawn" + str(player_index + 1)).global_position
 		$Players.add_child(new_player)
+
+func on_player_disconnected(_peer_id : int):
+	Lobby.mp_print("on_player_disconnected(%d)" % [_peer_id])
+	if multiplayer.is_server():
+		if $Players.has_node(str(_peer_id)):
+			$Players.get_node(str(_peer_id)).queue_free()
