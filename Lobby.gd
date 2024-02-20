@@ -14,8 +14,8 @@ var players_loaded = 0
 
 @onready var role = "Unknown"
 
-func mp_print(value):
-	print(role, "(for: ", multiplayer.get_unique_id(), ", from:", multiplayer.get_remote_sender_id(), ") - ", value)
+func mp_print(_value):
+	print(role, "(for: ", multiplayer.get_unique_id(), ", from:", multiplayer.get_remote_sender_id(), ") - ", _value)
 
 func _ready():
 	multiplayer.peer_connected.connect(_on_player_connected)
@@ -24,12 +24,12 @@ func _ready():
 	multiplayer.connection_failed.connect(_on_connected_fail)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 
-func join_game(address = ""):
+func join_game(_address = ""):
 	role = "Client"
-	if address.is_empty():
-		address = DEFAULT_SERVER_IP
+	if _address.is_empty():
+		_address = DEFAULT_SERVER_IP
 	var peer = ENetMultiplayerPeer.new()
-	var error = peer.create_client(address, PORT)
+	var error = peer.create_client(_address, PORT)
 	if error:
 		return error
 	multiplayer.multiplayer_peer = peer
@@ -51,8 +51,8 @@ func remove_multiplayer_peer():
 # When the server decides to start the game from a UI scene,
 # do Lobby.load_game.rpc(filepath)
 @rpc("call_local", "reliable")
-func load_game(game_scene_path : NodePath):
-	get_tree().change_scene_to_file(game_scene_path)
+func load_game(_game_scene_path : NodePath):
+	get_tree().change_scene_to_file(_game_scene_path)
 
 # Every peer will call this when they have loaded the game scene.
 @rpc("any_peer", "call_local", "reliable")
@@ -64,20 +64,20 @@ func player_loaded():
 			$/root/World.start_game()
 			players_loaded = 0
 
-func _on_player_connected(id):
-	Lobby.mp_print("_on_player_connected(%d)" % [id])
-	_register_player.rpc_id(id, player_info)
+func _on_player_connected(_id):
+	Lobby.mp_print("_on_player_connected(%d)" % [_id])
+	_register_player.rpc_id(_id, player_info)
 
 @rpc("any_peer", "reliable")
-func _register_player(new_player_info):
+func _register_player(_new_player_info):
 	var new_player_id = multiplayer.get_remote_sender_id()
-	players[new_player_id] = new_player_info
-	player_connected.emit(new_player_id, new_player_info)
+	players[new_player_id] = _new_player_info
+	player_connected.emit(new_player_id, _new_player_info)
 
-func _on_player_disconnected(id):
-	Lobby.mp_print("_on_player_disconnected(%d)" % [id])
-	players.erase(id)
-	player_disconnected.emit(id)
+func _on_player_disconnected(_id):
+	Lobby.mp_print("_on_player_disconnected(%d)" % [_id])
+	players.erase(_id)
+	player_disconnected.emit(_id)
 
 func _on_connected_ok():
 	Lobby.mp_print("_on_connected_ok()")
