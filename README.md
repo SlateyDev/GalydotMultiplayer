@@ -6,3 +6,5 @@ hopefully I will remember to update this document.
 
 Sample was created to help GalyGames on Godot Discord server in his troubles with multiplayer
 networking.
+
+Based on https://docs.godotengine.org/en/stable/tutorials/networking/high_level_multiplayer.html
