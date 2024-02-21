@@ -13,12 +13,12 @@ func start_game():
 		var player = (Lobby.players as Dictionary).keys()[player_index]
 		var new_player = player_prefab.instantiate() as Player
 		Lobby.mp_print("start_game(): adding player %d" % [player])
-		new_player.name = str(player)
+		new_player.name = Lobby.get_node_name_for_player(player)
 		new_player.position = get_node("Spawn" + str(player_index + 1)).global_position
 		$Players.add_child(new_player)
 
 func on_player_disconnected(_peer_id : int):
 	Lobby.mp_print("on_player_disconnected(%d)" % [_peer_id])
 	if multiplayer.is_server():
-		if $Players.has_node(str(_peer_id)):
-			$Players.get_node(str(_peer_id)).queue_free()
+		if $Players.has_node(Lobby.get_node_name_for_player(_peer_id)):
+			$Players.get_node(Lobby.get_node_name_for_player(_peer_id)).queue_free()
