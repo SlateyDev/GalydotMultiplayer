@@ -1,14 +1,19 @@
 extends CharacterBody3D
 class_name Player
 
+var _is_me : bool
+
 func _ready():
+	_is_me = MP.get_player_id(self) == multiplayer.get_unique_id()
+
 	MP.print("_ready() for %d" % [MP.get_player_id(self)])
-	if MP.get_player_id(self) == multiplayer.get_unique_id():
+	if _is_me:
 		MP.print("spawn @ %s for %d" % [global_position, MP.get_player_id(self)])
 	
-	set_physics_process(MP.get_player_id(self) == multiplayer.get_unique_id())
+	set_process(_is_me)
+	set_physics_process(_is_me)
 	
-	if MP.get_player_id(self) == multiplayer.get_unique_id():
+	if _is_me:
 		$Camera3D.current = true
 		$MeIndicator.visible = true
 		$AnimationPlayer.play("IndicatorBob")
