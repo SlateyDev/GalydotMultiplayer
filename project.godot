@@ -17,4 +17,4 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Lobby="*res://Lobby.gd"
+MP="*res://MP.gd"

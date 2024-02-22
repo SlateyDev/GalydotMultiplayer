@@ -20,7 +20,7 @@ func get_player_id(_node : Player):
 func get_node_name_for_player(_peer_id : int):
 	return "Player_" + str(_peer_id)
 
-func mp_print(_value):
+func print(_value):
 	var unique_id = "N/A"
 	var sender_id = "N/A"
 	if multiplayer:
@@ -54,21 +54,22 @@ func create_game():
 	multiplayer.multiplayer_peer = peer
 
 	players[1] = player_info
-	player_connected.emit(1, player_info)
+	player_connected.emit(1, players[1])
 
 func remove_multiplayer_peer():
 	multiplayer.multiplayer_peer = null
 
 # When the server decides to start the game from a UI scene,
-# do Lobby.load_game.rpc(filepath)
+# do MP.load_game.rpc(filepath)
 @rpc("call_local", "reliable")
 func load_game(_game_scene_path : NodePath):
+	DisplayServer.window_set_title(str(multiplayer.get_unique_id()))
 	get_tree().change_scene_to_file(_game_scene_path)
 
 # Every peer will call this when they have loaded the game scene.
 @rpc("any_peer", "call_local", "reliable")
 func player_loaded():
-	Lobby.mp_print("player_loaded()")
+	MP.print("player_loaded()")
 	if multiplayer.is_server():
 		players_loaded += 1
 		if players_loaded == players.size():
@@ -76,32 +77,36 @@ func player_loaded():
 			players_loaded = 0
 
 func _on_player_connected(_id):
-	Lobby.mp_print("_on_player_connected(%d)" % [_id])
+	MP.print("_on_player_connected(%d)" % [_id])
 	_register_player.rpc_id(_id, player_info)
 
 @rpc("any_peer", "reliable")
 func _register_player(_new_player_info):
 	var new_player_id = multiplayer.get_remote_sender_id()
 	players[new_player_id] = _new_player_info
-	player_connected.emit(new_player_id, _new_player_info)
+	player_connected.emit(new_player_id, players[new_player_id])
 
+# Server gets a message that a client has disconnected
 func _on_player_disconnected(_id):
-	Lobby.mp_print("_on_player_disconnected(%d)" % [_id])
+	MP.print("_on_player_disconnected(%d)" % [_id])
 	players.erase(_id)
 	player_disconnected.emit(_id)
 
+# Client has successfully connected to the server
 func _on_connected_ok():
-	Lobby.mp_print("_on_connected_ok()")
+	MP.print("_on_connected_ok()")
 	var peer_id = multiplayer.get_unique_id()
 	players[peer_id] = player_info
-	player_connected.emit(peer_id, player_info)
+	player_connected.emit(peer_id, players[peer_id])
 
+# Client fails to connect to a server
 func _on_connected_fail():
-	Lobby.mp_print("_on_connected_fail()")
+	MP.print("_on_connected_fail()")
 	multiplayer.multiplayer_peer = null
 
+# Client loses connection to the server
 func _on_server_disconnected():
-	Lobby.mp_print("_on_server_disconnected()")
+	MP.print("_on_server_disconnected()")
 	multiplayer.multiplayer_peer = null
 	players.clear()
 	server_disconnected.emit()

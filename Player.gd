@@ -2,24 +2,23 @@ extends CharacterBody3D
 class_name Player
 
 func _ready():
-	Lobby.mp_print("_ready() for %d" % [Lobby.get_player_id(self)])
-	if Lobby.get_player_id(self) == multiplayer.get_unique_id():
-		#position = spawn_position
-		Lobby.mp_print("spawn @ %s for %d" % [global_position, Lobby.get_player_id(self)])
+	MP.print("_ready() for %d" % [MP.get_player_id(self)])
+	if MP.get_player_id(self) == multiplayer.get_unique_id():
+		MP.print("spawn @ %s for %d" % [global_position, MP.get_player_id(self)])
 	
-	set_physics_process(Lobby.get_player_id(self) == multiplayer.get_unique_id())
+	set_physics_process(MP.get_player_id(self) == multiplayer.get_unique_id())
 	
-	if Lobby.get_player_id(self) == multiplayer.get_unique_id():
+	if MP.get_player_id(self) == multiplayer.get_unique_id():
 		$Camera3D.current = true
 		$MeIndicator.visible = true
 		$AnimationPlayer.play("IndicatorBob")
 
 func _enter_tree():
-	Lobby.mp_print("_enter_tree() for %d" % [Lobby.get_player_id(self)])
-	$ReplicationSynchronizer.set_multiplayer_authority(Lobby.get_player_id(self))
+	MP.print("_enter_tree() for %d" % [MP.get_player_id(self)])
+	$ReplicationSynchronizer.set_multiplayer_authority(MP.get_player_id(self))
 
 func _set(property, value):
-	Lobby.mp_print("%s._set(%s, %s)" % [self, property, value])
+	MP.print("%s._set(%s, %s)" % [self, property, value])
 
 const SPEED = 5.0
 const JUMP_VELOCITY = 4.5
