@@ -14,12 +14,6 @@ var players_loaded = 0
 
 @onready var role = "Unknown"
 
-func get_player_id(_node : Player):
-	return _node.name.split("_")[1].to_int()
-
-func get_node_name_for_player(_peer_id : int):
-	return "Player_" + str(_peer_id)
-
 func print(_value):
 	var unique_id = "N/A"
 	var sender_id = "N/A"
@@ -63,6 +57,7 @@ func remove_multiplayer_peer():
 # do MP.load_game.rpc(filepath)
 @rpc("call_local", "reliable")
 func load_game(_game_scene_path : NodePath):
+	MP.print("load_game(%s)" % [_game_scene_path])
 	DisplayServer.window_set_title(str(multiplayer.get_unique_id()))
 	get_tree().change_scene_to_file(_game_scene_path)
 
@@ -76,12 +71,14 @@ func player_loaded():
 			$/root/World.start_game()
 			players_loaded = 0
 
+# Received by every peer about every other peer connecting to it
 func _on_player_connected(_id):
 	MP.print("_on_player_connected(%d)" % [_id])
 	_register_player.rpc_id(_id, player_info)
 
 @rpc("any_peer", "reliable")
 func _register_player(_new_player_info):
+	MP.print("_register_player(%s)" % [_new_player_info])
 	var new_player_id = multiplayer.get_remote_sender_id()
 	players[new_player_id] = _new_player_info
 	player_connected.emit(new_player_id, players[new_player_id])

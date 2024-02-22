@@ -28,7 +28,7 @@ var names : Array[String] = [
 ]
 
 func pick_unused_player_name() -> String:
-	var picknames = names.filter(func(name): return players.values().all(func(n): return n.name != name))
+	var picknames = names.filter(func(fname): return players.values().all(func(n): return n.name != fname))
 	return picknames.pick_random()
 
 func _ready():
