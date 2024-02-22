@@ -14,6 +14,12 @@ var players_loaded = 0
 
 @onready var role = "Unknown"
 
+func get_player_id(_node : Player):
+	return _node.name.split("_")[1].to_int()
+
+func get_node_name_for_player(_peer_id : int):
+	return "Player_" + str(_peer_id)
+
 func print(_value):
 	var unique_id = "N/A"
 	var sender_id = "N/A"
